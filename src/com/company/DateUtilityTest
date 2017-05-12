@@ -1,0 +1,73 @@
+package com.company;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DateUtilityTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getTimePeriods_shouldThrowException_whenEitherDateIsNotProvided(){
+        Date _fromDate = new Date(2013,5,2);
+        DateUtility.getTimePeriods(_fromDate, null, TimePeriod.DAY);
+    }
+
+    @Test
+    public void getTimePeriods_shouldReturnDays_whenDayIsProvidedAsTimePeriod(){
+        Date _fromDate = new Date(2013,5,2);
+        Date _toDate = new Date(2013,5,4);
+        List<String> expected = new ArrayList<>();
+        expected.add("2 June");
+        expected.add("3 June");
+        expected.add("4 June");
+
+        List<String> actual = DateUtility.getTimePeriods(_fromDate, _toDate, TimePeriod.DAY);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getTimePeriods_shouldReturnMonths_whenMonthIsProvidedAsTimePeriod(){
+        Date _fromDate = new Date(2013,5,2);
+        Date _toDate = new Date(2013,10,4);
+        List<String> expected = new ArrayList<>();
+        expected.add("June 2013");
+        expected.add("July 2013");
+        expected.add("August 2013");
+        expected.add("September 2013");
+        expected.add("October 2013");
+        expected.add("November 2013");
+
+        List<String> actual = DateUtility.getTimePeriods(_fromDate, _toDate, TimePeriod.MONTH);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getTimePeriods_shouldReturnQuarters_whenQuarterIsProvidedAsTimePeriod(){
+        Date _fromDate = new Date(2013,1,2);
+        Date _toDate = new Date(2014,3,4);
+        List<String> expected = new ArrayList<>();
+        expected.add("March2013");
+        expected.add("June2013");
+        expected.add("September2013");
+        expected.add("December2013");
+        expected.add("March2014");
+
+        List<String> actual = DateUtility.getTimePeriods(_fromDate, _toDate, TimePeriod.QUARTER);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getTimePeriods_shouldReturnYears_whenYearIsProvidedAsTimePeriod(){
+        Date _fromDate = new Date(2013,1,2);
+        Date _toDate = new Date(2014,3,4);
+        List<String> expected = new ArrayList<>();
+        expected.add("2013");
+        expected.add("2014");
+
+        List<String> actual = DateUtility.getTimePeriods(_fromDate, _toDate, TimePeriod.YEAR);
+        Assert.assertEquals(expected, actual);
+    }
+}
