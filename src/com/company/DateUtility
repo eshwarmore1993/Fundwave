@@ -1,0 +1,60 @@
+package com.company;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+public class DateUtility {
+    private static Calendar _calendar = new GregorianCalendar();
+    private static String[] _monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    public static List<String> getTimePeriods(Date fromDate, Date toDate, TimePeriod timePeriod) throws IllegalArgumentException{
+        if(fromDate == null || toDate == null){
+            throw new IllegalArgumentException("to date and from date cannot be null");
+        }
+
+        List<String> requestedTimes = new ArrayList<>();
+        switch (timePeriod){
+            case DAY:
+                _calendar.setTime(fromDate);
+                while (_calendar.getTime().before(toDate)) {
+                    requestedTimes.add(Integer.toString(_calendar.getTime().getDate()) + " " + monthName(_calendar.getTime().getMonth()));
+                    _calendar.add(Calendar.DATE, 1);
+                }
+                requestedTimes.add(Integer.toString(_calendar.getTime().getDate()) + " " + monthName(_calendar.getTime().getMonth()));
+                break;
+
+            case MONTH:
+                _calendar.setTime(fromDate);
+                while (_calendar.getTime().getYear() < toDate.getYear() || (_calendar.getTime().getMonth() <= toDate.getMonth() && _calendar.getTime().getYear() == toDate.getYear())) {
+                    requestedTimes.add(monthName(_calendar.getTime().getMonth()) + " " + _calendar.getTime().getYear());
+                    _calendar.add(Calendar.MONTH, 1);
+                }
+                break;
+
+            case QUARTER:
+                _calendar.setTime(fromDate);
+                _calendar.add(Calendar.MONTH, (2 - fromDate.getMonth()%3));
+                while (_calendar.getTime().getYear() < toDate.getYear() || (_calendar.getTime().getMonth() <= toDate.getMonth() && _calendar.getTime().getYear() == toDate.getYear())) {
+                    requestedTimes.add(monthName(_calendar.getTime().getMonth()) + _calendar.getTime().getYear());
+                    _calendar.add(Calendar.MONTH, 3);
+                }
+                break;
+
+            case YEAR:
+                int _fromYear = fromDate.getYear();
+                int _toYear = toDate.getYear();
+                while(_fromYear <= _toYear){
+                    requestedTimes.add(Integer.toString(_fromYear));
+                    _fromYear++;
+                }
+        }
+        return requestedTimes;
+    }
+
+    public static String monthName(int month){
+        return _monthNames[month];
+    }
+}
